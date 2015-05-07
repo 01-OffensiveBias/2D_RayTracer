@@ -57,7 +57,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
 
-<<<<<<< HEAD
         //otherDebugIntersect.forEach(function (point) {
         //    if (point != null) {
         //        ctx.beginPath();
@@ -67,17 +66,6 @@ document.addEventListener("DOMContentLoaded", function () {
         //        ctx.closePath();
         //    }
         //});
-=======
-        otherDebugIntersect.forEach(function (point) {
-            if (point != null) {
-                ctx.beginPath();
-                ctx.fillStyle = 'blue';
-                ctx.arc(point.x, point.y, 3, 0, 2 * Math.PI);
-                ctx.fill();
-                ctx.closePath();
-            }
-        });
->>>>>>> 5c14bff54ee98aa2328092647c7c1bb669b66108
 
        /* debugLowest.forEach(function (point) {
             if (point != null) {

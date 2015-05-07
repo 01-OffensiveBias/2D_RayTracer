@@ -161,7 +161,6 @@ var shapes, lights, rays, debug, debugIntersect = [], debugLowest = [], otherDeb
 
                 rays.forEach(function (ray) {
                     var intersect = getLineIntersect(ray, segment);
-<<<<<<< HEAD
 
                     if (intersect != 0 && intersect != null &&
                         intersect.distanceTo(segment.start) > 0.5 &&
@@ -174,16 +173,6 @@ var shapes, lights, rays, debug, debugIntersect = [], debugLowest = [], otherDeb
 
                 // This might need to be moved to somewhere after the intersections are merged
                 // with the known shape points
-=======
-                    if (intersect != 0 && intersect != null){ // null check should not be needed
-                        intersections.push(intersect);
-                        debugIntersect.push(intersect);
-                    }
-                });
-
-                // Filter intersectsion using distanceto
-
->>>>>>> 5c14bff54ee98aa2328092647c7c1bb669b66108
                 var lowest = null;
                 intersections.forEach(function (point) {
                     if (lowest == null) {
