@@ -48,12 +48,34 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         debugIntersect.forEach(function (point) {
-            ctx.beginPath();
-            ctx.fillStyle = 'green';
-            ctx.arc(point.x, point.y, 3, 0, 2 * Math.PI);
-            ctx.fill();
-            ctx.closePath();
+            if (point != null) {
+                ctx.beginPath();
+                ctx.fillStyle = 'green';
+                ctx.arc(point.x, point.y, 3, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.closePath();
+            }
         });
+
+        otherDebugIntersect.forEach(function (point) {
+            if (point != null) {
+                ctx.beginPath();
+                ctx.fillStyle = 'blue';
+                ctx.arc(point.x, point.y, 3, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.closePath();
+            }
+        });
+
+       /* debugLowest.forEach(function (point) {
+            if (point != null) {
+                ctx.beginPath();
+                ctx.fillStyle = 'blue';
+                ctx.arc(point.x, point.y, 3, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.closePath();
+            }
+        });*/
 
         window.webkitRequestAnimationFrame(draw);
     }

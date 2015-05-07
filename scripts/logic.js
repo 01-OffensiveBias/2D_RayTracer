@@ -1,4 +1,4 @@
-var shapes, lights, rays, debug, debugIntersect;
+var shapes, lights, rays, debug, debugIntersect = [], debugLowest = [], otherDebugIntersect = [];
 
 (function () {
     "use strict";
@@ -80,6 +80,7 @@ var shapes, lights, rays, debug, debugIntersect;
             for (var i = 0; i < this.points.length - 1; i++) {
                 segments.push(new Segment(this.points[i], this.points[i + 1]));
             }
+            segments.push(new Segment(this.points[0], this.points[segments.length]));
 
             return segments;
         }
@@ -148,6 +149,48 @@ var shapes, lights, rays, debug, debugIntersect;
         });
 
         //console.log(rays);
+
+        debugIntersect = [];
+        debugLowest = [];
+        otherDebugIntersect = [];
+
+        var light = lights[0];
+        shapes.forEach(function (shape) {
+            shape.segments.forEach(function (segment) {
+                var intersections = [];
+
+                rays.forEach(function (ray) {
+                    var intersect = getLineIntersect(ray, segment);
+                    if (intersect != 0 && intersect != null){ // null check should not be needed
+                        intersections.push(intersect);
+                        debugIntersect.push(intersect);
+                    }
+                });
+
+                // Filter intersectsion using distanceto
+
+                var lowest = null;
+                intersections.forEach(function (point) {
+                    if (lowest == null) {
+                        lowest = point;
+                    } else if (point.distanceTo(light) < lowest.distanceTo(light)) {
+                        lowest = point;
+                    }
+                });
+                otherDebugIntersect.push(lowest);
+
+                /*intersections.sort(function (a, b) {
+                    return a.distanceTo(light) - b.distanceTo(light);
+                });*/
+
+                /*var lowest = null;
+                 intersections.forEach(function () {
+
+                 });*/
+            });
+        });
+
+        //console.log(debugIntersect.length);
     };
 
     debug = [
@@ -155,28 +198,7 @@ var shapes, lights, rays, debug, debugIntersect;
         new Segment(new Point(200, 0),new Point(0, 200))
     ];
 
-    debugIntersect = [];
 
-    shapes.forEach(function (shape) {
-        shape.segments.forEach(function (segment) {
-            var intersections = [];
-
-            rays.forEach(function (ray) {
-                var intersect = getLineIntersect(ray, segment);
-                if (intersect != 0) {
-                    intersections.push(intersect);
-                    debugIntersect.push(intersect);
-                }
-            });
-
-            /*var lowest = null;
-            intersections.forEach(function () {
-
-            });*/
-        });
-    });
-
-    console.log(debugIntersect.length);
 
     //debugIntersect = getLineIntersect(debug[0], debug[1]);
 })();
