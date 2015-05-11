@@ -38,15 +38,6 @@ document.addEventListener("DOMContentLoaded", function () {
             ctx.closePath();
         });
 
-
-        debug.forEach(function (line) {
-            ctx.beginPath();
-            ctx.moveTo(line.start.x, line.start.y);
-            ctx.lineTo(line.end.x, line.end.y);
-            ctx.stroke();
-            ctx.closePath();
-        });
-
         debugIntersect.forEach(function (point) {
             if (point != null) {
                 ctx.beginPath();
@@ -67,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
         //    }
         //});
 
-       /* debugLowest.forEach(function (point) {
+        debugLowest.forEach(function (point) {
             if (point != null) {
                 ctx.beginPath();
                 ctx.fillStyle = 'blue';
@@ -75,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 ctx.fill();
                 ctx.closePath();
             }
-        });*/
+        });
 
         window.webkitRequestAnimationFrame(draw);
     }

@@ -1,4 +1,4 @@
-var shapes, lights, rays, debug, debugIntersect = [], debugLowest = [], otherDebugIntersect = [];
+var shapes, lights, rays, debugIntersect = [], debugLowest = [], otherDebugIntersect = [];
 
 (function () {
     "use strict";
@@ -51,9 +51,10 @@ var shapes, lights, rays, debug, debugIntersect = [], debugLowest = [], otherDeb
     }
 
     class Ray extends Segment {
-        constructor(p1, dir) {
+        constructor(p1, dir, dest) {
             //super(dir, 2147483647);
             super(p1, new Point(p1.x + Math.cos(dir) * 2147483647, p1.y + Math.sin(dir) * 2147483647), dir);
+            this.dest = dest;
             // val.start.x + Math.cos(dir) * 2147483647, val.start.y + Math.sin(dir) * 2147483647
         }
     }
@@ -109,7 +110,7 @@ var shapes, lights, rays, debug, debugIntersect = [], debugLowest = [], otherDeb
         s = (-s1_y * (p0_x - p2_x) + s1_x * (p0_y - p2_y)) / (-s2_x * s1_y + s1_x * s2_y);
         t = ( s2_x * (p0_y - p2_y) - s2_y * (p0_x - p2_x)) / (-s2_x * s1_y + s1_x * s2_y);
 
-        if (s >= 0 && s <= 1 && t >= 0 && t <= 1) {
+        if (s >= 0 && s <= 1.05 && t >= 0 && t <= 1.05) {
             // Collision detected
             var i_x = p0_x + (t * s1_x);
             var i_y = p0_y + (t * s1_y);
@@ -124,6 +125,7 @@ var shapes, lights, rays, debug, debugIntersect = [], debugLowest = [], otherDeb
     ];
 
     shapes = [
+        new Rectangle(0, 0, 750, 750),
         new Rectangle(30, 30, 80, 80),
         new Rectangle(400, 80, 60, 120)
     ];
@@ -139,7 +141,7 @@ var shapes, lights, rays, debug, debugIntersect = [], debugLowest = [], otherDeb
 
             shapes.forEach(function (shape) {
                 shape.points.forEach(function (point) {
-                    rays.push(new Ray(new Point(light.x, light.y), Math.atan2(light.y - point.y, light.x - point.x) - Math.PI));
+                    rays.push(new Ray(new Point(light.x, light.y), Math.atan2(light.y - point.y, light.x - point.x) - Math.PI, point));
                 });
             });
         });
@@ -155,54 +157,82 @@ var shapes, lights, rays, debug, debugIntersect = [], debugLowest = [], otherDeb
         otherDebugIntersect = [];
 
         var light = lights[0];
-        shapes.forEach(function (shape) {
-            shape.segments.forEach(function (segment) {
-                var intersections = [];
 
-                rays.forEach(function (ray) {
+
+        rays.forEach(function (ray) {
+            var intersections = [];
+            var lowest = null;
+            /*shapes.forEach(function (shape) {
+                intersections.concat(shape.points);
+            });*/
+            intersections.push(ray.dest);
+
+
+            shapes.forEach(function (shape) {
+                shape.segments.forEach(function (segment) {
                     var intersect = getLineIntersect(ray, segment);
 
-                    if (intersect != 0 && intersect != null &&
-                        intersect.distanceTo(segment.start) > 0.5 &&
-                        intersect.distanceTo(segment.end) > 0.5) { // Null check should not be needed
+                    if (intersect != null
+                        /*intersect.distanceTo(segment.start) > 0.5 &&
+                        intersect.distanceTo(segment.end) > 0.5*/) {
+
+                        if (lowest == null) {
+                            lowest = intersect;
+                        } else if (intersect.distanceTo(light) < lowest.distanceTo(light)) {
+                            lowest = intersect;
+                        }
+
                         intersections.push(intersect);
                         debugIntersect.push(intersect);
-
                     }
                 });
 
-                // This might need to be moved to somewhere after the intersections are merged
-                // with the known shape points
-                var lowest = null;
-                intersections.forEach(function (point) {
-                    if (lowest == null) {
-                        lowest = point;
-                    } else if (point.distanceTo(light) < lowest.distanceTo(light)) {
-                        lowest = point;
-                    }
-                });
-                otherDebugIntersect.push(lowest);
 
-                /*intersections.sort(function (a, b) {
-                    return a.distanceTo(light) - b.distanceTo(light);
-                });*/
 
-                /*var lowest = null;
-                 intersections.forEach(function () {
-
-                 });*/
             });
-        });
 
-        //console.log(debugIntersect.length);
+            if (lowest != null) {
+                debugLowest.push(lowest);
+            }
+            //debugLowest.push(ray.dest);
+        });
     };
 
-    debug = [
-        new Segment(new Point(0, 0),new Point(300, 50)),
-        new Segment(new Point(200, 0),new Point(0, 200))
-    ];
-
-
-
-    //debugIntersect = getLineIntersect(debug[0], debug[1]);
 })();
+
+
+/* var light = lights[0];
+ shapes.forEach(function (shape) {
+ shape.segments.forEach(function (segment) {
+
+ var intersections = [];
+
+ rays.forEach(function (ray) {
+ var intersect = getLineIntersect(ray, segment);
+
+ var lowest = null;
+
+ if (intersect != 0 && intersect != null &&
+ intersect.distanceTo(segment.start) > 0.5 &&
+ intersect.distanceTo(segment.end) > 0.5) { // Null check should not be needed
+
+ if (lowest == null) {
+ lowest = intersect;
+ } else if (intersect.distanceTo(light) < lowest.distanceTo(light)) {
+ lowest = intersect;
+ }
+ }
+
+ if (lowest != null) {
+ debugLowest.push(lowest);
+ intersections.push(intersect);
+ debugIntersect.push(intersect);
+ }
+ });
+
+ shapes.forEach(function (shape) {
+ intersections.concat(shape.points);
+ });
+ });
+ });
+ };*/
